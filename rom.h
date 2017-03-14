@@ -13,6 +13,7 @@ class ROM
 
         ROM();
         ROM(string name, int size, int crc, int md5, int sha1);
+        
         string getName();
         void setName(string name);
         int getSize();

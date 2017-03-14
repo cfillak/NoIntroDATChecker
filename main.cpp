@@ -31,12 +31,35 @@ int parse(string datFileName)
     {
         while ( getline (datfile,line) )
         {
-            if (line.compare(0,6,"game (") == 0)
+            if (line.compare(1,5,"rom (") == 0)
             {
-                getline(datfile,line);
-                getline(datfile,line);
-                getline(datfile,line);
-                cout << line << '\n';
+                int namepos = line.find("name", 0);
+                int sizepos = line.find("size", namepos);
+                int crcpos = line.find("crc", sizepos);
+                int md5pos = line.find("md5", crcpos);
+                int sha1pos = line.find("sha1", md5pos);
+
+                string name = line.substr(namepos, sizepos-namepos);
+                name = name.substr(6);
+                name = name.substr(0, name.length()-2);
+                cout << name << '\n';
+
+                string size = line.substr(sizepos, crcpos-sizepos);
+                size = size.substr(5);
+                cout << size << '\n';
+
+                string crc = line.substr(crcpos, md5pos-crcpos);
+                crc = crc.substr(4);
+                cout << crc << '\n';
+
+                string md5 = line.substr(md5pos, sha1pos-md5pos);
+                md5 = md5.substr(4);
+                cout << md5 << '\n';
+
+                string sha1 = line.substr(sha1pos);
+                sha1 = sha1.substr(5);
+                cout << sha1 << '\n';
+
             }
 
         }
