@@ -17,6 +17,7 @@ using namespace pugi;
 std::string SetDir = "";
 
 int parse(const char * DatFileName);
+long long romSetSize(const char * DatFileName);
 
 string StringToUpper(string strToConvert)
 {
@@ -51,11 +52,39 @@ int main(int argc, char ** argv)
     }
     SetDir = argv[2];
     // cout << setDir << endl;
-    parse(argv[1]);
+    // parse(argv[1]);
     // setDir = argv[2];
+    // cout << romSetSize(argv[1]) << " bytes" << endl;
 
 }
 
+long long romSetSize(const char * DatFileName)
+{
+    xml_document DatFile;
+    xml_parse_result result = DatFile.load_file(DatFileName, parse_default, encoding_auto);
+    xml_node root = DatFile.child("datafile");
+    long long setSize = 0;
+
+    for (xml_node MyNode = root.child("header"); MyNode; MyNode = MyNode.next_sibling("game"))
+    {
+        for (xml_attribute_iterator ait = MyNode.child("rom").attributes_begin(); ait != MyNode.child("rom").attributes_end(); ++ait)
+        {
+            if (strncmp(ait->name(), "size", 4) == 0) {
+                // cout << " " << ait->name() << "=" << ait->value() << endl;
+                setSize += (long long) (ait->as_int());
+                // cout << " " << ait->name() << "=" << ait->value() << endl;
+                // string md5 = md5Rom(ait->value());
+                // string sha1 = sha1Rom(ait->value());
+                // cout << "md5: " << md5 << endl;
+                // cout << "sha1: " << sha1 << endl;
+            }
+
+        }
+
+    }
+
+    return setSize;
+}
 
 int parse(const char * DatFileName)
 {
